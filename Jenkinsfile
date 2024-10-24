@@ -1,5 +1,8 @@
 pipeline {
     agent any 
+    options {
+        skipStagesAfterUnstable()
+    }    
     stages {
         stage('Build') { 
             steps {
@@ -17,5 +20,15 @@ pipeline {
                 }
             }
         }
+        stage('Deliver') {
+            steps {
+                sh "pyinstaller --onefile sources/add2vals.py"
+            }
+            post {
+                success {
+                    archiveArtifacts 'dist/add2vals'
+                }
+            }
+        }        
     }
 }
